@@ -19,21 +19,44 @@
 // }
 // getData("");
 
-const url = "c3bd703352004180b80425fb650ad860&country=US";
+// const url = "c3bd703352004180b80425fb650ad860&country=US";
 
-console.log(fetch(url));
+// console.log(fetch(url));
 
-fetch(url)
-    .then((response) => response.json())
-    .then((data) => console.log(data));
+// fetch(url)
+//     .then((response) => response.json())
+//     .then((data) => console.log(data));
+// async function fetchData(url) {
+//     try {
+//         const response = await fetch(url);
+//         const data = await response.json();
+//         console.log(data);
+//         return data;
+//     } catch (err) {
+//         console.error(err);
+//     }
+// }
+// fetchData(url);
+
+const url = "https://randomfox.ca/floof/";
+
 async function fetchData(url) {
-    try {
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log(data);
-        return data;
-    } catch (err) {
-        console.error(err);
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
     }
+
+    const data = await response.json();
+    console.log(data); 
+    
+    document.getElementById("api-response").innerHTML = `<img src="${data.image}" alt="Random Fox" style="max-width:400px;"><br><a href="${data.link}" target="_blank">View fox page</a>`;
+
+    return data;
+  } catch (err) {
+    console.error(err);
+  }
 }
+
 fetchData(url);
