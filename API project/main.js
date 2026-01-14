@@ -26,7 +26,7 @@ const app = {
         data.message.forEach(imgUrl => {
           const img = document.createElement("img")
           img.src = imgUrl
-          img.className = "rounded-lg border-4 border-pink-300 shadow hover:scale-105 transition max-w-full"
+    
           this.apiResponse.appendChild(img)
         })
       }
@@ -40,11 +40,10 @@ const app = {
 }
 
 app.randomBtn.addEventListener("click", () => app.fetchData("https://dog.ceo/api/breeds/image/random"))
-
 app.searchBtn.addEventListener("click", () => {
   const breed = app.breedInput.value.toLowerCase().trim()
   if (breed === "") {
-    app.apiResponse.textContent = "Please type a breed."
+    app.apiResponse.textContent = "type a breed."
     return
   }
   app.fetchData(`https://dog.ceo/api/breed/${breed}/images`)
