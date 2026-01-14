@@ -1,62 +1,53 @@
-// const url= "c3bd703352004180b80425fb650ad860&country=US"
-// async function getData(url) {
-//     try {
-//         //go get data
-// const response = await fetch(url);
-// // handle errors
-// if(response.status !=200){
-//     throw new error(response);
-// } else {
-//     // makes the response into json data we can use
-//     const data = await response.json();
-//     console.log(data);
-//     // document.getElementById("").textContent=data.name;
-// }
-//     } catch (error) {
-//         console.error(error);
-//     }
-    
-// }
-// getData("");
+const app = {
+  apiResponse: document.querySelector("#api-response"),
+  breedInput: document.querySelector("#breedInput"),
+  searchBtn: document.querySelector("#searchBtn"),
+  randomBtn: document.querySelector("#randomBtn"),
 
-// const url = "c3bd703352004180b80425fb650ad860&country=US";
+  fetchData: async function(url) {
+    try {
+      const response = await fetch(url)
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`)
+      const data = await response.json()
 
-// console.log(fetch(url));
+      this.apiResponse.innerHTML = ""
 
-// fetch(url)
-//     .then((response) => response.json())
-//     .then((data) => console.log(data));
-// async function fetchData(url) {
-//     try {
-//         const response = await fetch(url);
-//         const data = await response.json();
-//         console.log(data);
-//         return data;
-//     } catch (err) {
-//         console.error(err);
-//     }
-// }
-// fetchData(url);
+      if (url.includes("random")) {
+        const img = document.createElement("img")
+        img.src = data.message
+        img.className = "rounded-lg border-4 border-pink-300 shadow hover:scale-105 transition max-w-full"
+        this.apiResponse.appendChild(img)
+      } else {
+        if (!data.message || data.message.length === 0) {
+          this.apiResponse.textContent = "No images for breed"
+          return
+        }
 
-const url = "https://randomfox.ca/floof/";
+        data.message.forEach(imgUrl => {
+          const img = document.createElement("img")
+          img.src = imgUrl
+          img.className = "rounded-lg border-4 border-pink-300 shadow hover:scale-105 transition max-w-full"
+          this.apiResponse.appendChild(img)
+        })
+      }
 
-async function fetchData(url) {
-  try {
-    const response = await fetch(url);
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
+      return data
+    } catch (err) {
+      console.error(err)
+      this.apiResponse.textContent = "error"
     }
-
-    const data = await response.json();
-    console.log(data); 
-    
-    document.getElementById("api-response").innerHTML = `<img src="${data.image}" alt="Random Fox" style="max-width:400px;"><br><a href="${data.link}" target="_blank">View fox page</a>`;
-
-    return data;
-  } catch (err) {
-    console.error(err);
   }
 }
 
-fetchData(url);
+app.randomBtn.addEventListener("click", () => app.fetchData("https://dog.ceo/api/breeds/image/random"))
+
+app.searchBtn.addEventListener("click", () => {
+  const breed = app.breedInput.value.toLowerCase().trim()
+  if (breed === "") {
+    app.apiResponse.textContent = "Please type a breed."
+    return
+  }
+  app.fetchData(`https://dog.ceo/api/breed/${breed}/images`)
+})
+
+app.fetchData("https://dog.ceo/api/breeds/image/random")
